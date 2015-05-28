@@ -188,6 +188,22 @@ func (r *ResourceProvisioner) decodeConfig(c *terraform.ResourceConfig) (*Provis
 
 	if p.Environment == "" {
 		p.Environment = defaultEnv
+	} else {
+		if envRaw, ok := c.Config["environment"]; ok {
+			env, ok := envRaw.(string)
+			if !ok {
+				return p, errors.New("error parsing environment. Must be a string")
+			}
+			p.Environment = env
+		}
+	}
+
+	if nodeRaw, ok := c.Config["node_name"]; ok {
+		node, ok := nodeRaw.(string)
+		if !ok {
+			return p, errors.New("error parsing node_name. Must be a string")
+		}
+		p.NodeName = node
 	}
 
 	if attrs, ok := c.Raw["attributes"]; ok {
